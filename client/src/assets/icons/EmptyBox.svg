@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" fill="none">
+  <!-- Box base -->
+  <rect x="14" y="28" width="36" height="20" rx="3" fill="#e0f7fa" stroke="#26c6da" stroke-width="2"/>
+  
+  <!-- Box lid -->
+  <polygon points="14,28 32,16 50,28 14,28" fill="#26c6da" opacity="0.3"/>
+  
+  <!-- Floating document -->
+  <rect x="28" y="6" width="8" height="14" rx="1.5" fill="#ffffff" stroke="#26c6da" stroke-width="1.5" transform="rotate(-10 28 6)"/>
+  
+  <!-- Shadow -->
+  <ellipse cx="32" cy="54" rx="18" ry="4" fill="#26c6da" opacity="0.15"/>
+</svg>
