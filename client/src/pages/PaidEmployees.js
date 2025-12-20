@@ -1,4 +1,3 @@
-// File: client/src/pages/PaidEmployees.js
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { getAllEmployees, logout, getCurrentUser, savePayroll, getPayroll } from '../services/api';

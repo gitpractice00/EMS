@@ -206,7 +206,7 @@ function Attendance() {
                   {employees.map(emp => (
                     <div key={emp.id} className="attendance-card">
                       <div className="employee-details">
-                        <div className="avatar">{emp.name.charAt(0).toUpperCase()}</div>
+                        <div className="avatar">#{emp.id}</div>
                         <div className="info">
                           <h3>{emp.name}</h3>
                           <p>{emp.position || 'No Position'}</p>
@@ -267,7 +267,7 @@ function Attendance() {
                 {getFilteredEmployees().map(emp => (
                   <div key={emp.id} className="attendance-card">
                     <div className="employee-details">
-                      <div className="avatar">{emp.name.charAt(0).toUpperCase()}</div>
+                      <div className="avatar">#{emp.id}</div>
                       <div className="info">
                         <h3>{emp.name}</h3>
                         <p>{emp.position || 'No Position'}</p>

@@ -9,10 +9,10 @@ const connection = mysql.createConnection({
 
 connection.connect(function(err) {
   if (err) {
-    console.error('❌ Error connecting to database:', err.message);
+    console.error(' Error connecting to database:', err.message);
     return;
   }
-  console.log('✅ Connected to MySQL database!');
+  console.log(' Connected to MySQL database!');
 });
 
 // Test connection function
@@ -20,10 +20,10 @@ const testConnection = async () => {
   return new Promise((resolve, reject) => {
     connection.query('SELECT 1', function(err) {
       if (err) {
-        console.error('❌ Database connection test failed:', err.message);
+        console.error(' Database connection test failed:', err.message);
         reject(err);
       } else {
-        console.log('✅ Database connection test successful');
+        console.log(' Database connection test successful');
         resolve();
       }
     });
