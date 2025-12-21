@@ -1,4 +1,4 @@
-// // Codes after the SVG instead of some emoji icons
+// // File: client/src/pages/Payroll.js
 // import React, { useState, useEffect } from 'react';
 // import { useNavigate } from 'react-router-dom';
 // import { getAllEmployees, logout, getCurrentUser, savePayroll, getPayroll } from '../services/api';
@@ -20,7 +20,6 @@
 //   const [loading, setLoading] = useState(true);
 //   const [payrollData, setPayrollData] = useState({});
 //   const [saving, setSaving] = useState(false);
-//   const [viewDetail, setViewDetail] = useState(null); // null, 'paid', 'pending', 'all'
 //   const navigate = useNavigate();
 //   const user = getCurrentUser();
 
@@ -160,26 +159,6 @@
 //   const getPaidCount = () => Object.values(payrollData).filter(p => p.status === 'paid').length;
 //   const getPendingCount = () => Object.values(payrollData).filter(p => p.status === 'pending').length;
 
-//   const getFilteredEmployees = () => {
-//     if (viewDetail === 'paid') {
-//       return employees.filter(emp => payrollData[emp.id]?.status === 'paid');
-//     }
-//     if (viewDetail === 'pending') {
-//       return employees.filter(emp => payrollData[emp.id]?.status === 'pending');
-//     }
-//     if (viewDetail === 'all') {
-//       return employees;
-//     }
-//     return employees;
-//   };
-
-//   const getViewTitle = () => {
-//     if (viewDetail === 'paid') return 'Paid Employees';
-//     if (viewDetail === 'pending') return 'Pending Employees';
-//     if (viewDetail === 'all') return 'All Employees';
-//     return 'Monthly Payroll';
-//   };
-
 //   if (loading) {
 //     return (
 //       <div className="loading-screen">
@@ -200,7 +179,7 @@
 //         <div className="user-section">
 //           <button className="btn-back" onClick={() => navigate('/dashboard')}>
 //             <ArrowLeftIcon className="icon-small" />
-//             Back to Dashboard
+//             Dashboard
 //           </button>
 //           <div className="user-info">
 //             <UserCircleIcon className="user-icon" />
@@ -217,62 +196,64 @@
 
 //       {/* Main Content */}
 //       <main className="main-content">
-//         {/* Stats Section - Only show when not in detail view */}
-//         {!viewDetail && (
-//           <section className="stats-section">
-//             <div className="stat-box blue">
-//               <div className="stat-icon">
-//                 <RupeeSign />
-//               </div>
-//               <div className="stat-info">
-//                 <h3>Rs. {getTotalPayroll().toLocaleString()}</h3>
-//                 <p>Total Payroll</p>
-//               </div>
+//         {/* Stats Section with Navigation */}
+//         <section className="stats-section">
+//           <div className="stat-box blue">
+//             <div className="stat-icon">
+//               <RupeeSign />
 //             </div>
+//             <div className="stat-info">
+//               <h3>Rs. {getTotalPayroll().toLocaleString()}</h3>
+//               <p>Total Payroll</p>
+//             </div>
+//           </div>
 
-//             <div className="stat-box green clickable" onClick={() => setViewDetail('paid')}>
-//               <div className="stat-icon">
-//                 <CheckCircleIcon />
-//               </div>
-//               <div className="stat-info">
-//                 <h3>{getPaidCount()}</h3>
-//                 <p>Paid</p>
-//               </div>
+//           {/* Navigate to Paid Employees Page */}
+//           <div 
+//             className="stat-box green clickable" 
+//             onClick={() => navigate('/payroll/paid')}
+//             style={{ cursor: 'pointer' }}
+//           >
+//             <div className="stat-icon">
+//               <CheckCircleIcon />
 //             </div>
+//             <div className="stat-info">
+//               <h3>{getPaidCount()}</h3>
+//               <p>Paid</p>
+//             </div>
+//           </div>
 
-//             <div className="stat-box orange clickable" onClick={() => setViewDetail('pending')}>
-//               <div className="stat-icon">
-//                 <ClockIcon />
-//               </div>
-//               <div className="stat-info">
-//                 <h3>{getPendingCount()}</h3>
-//                 <p>Pending</p>
-//               </div>
+//           {/* Navigate to Pending Employees Page */}
+//           <div 
+//             className="stat-box orange clickable" 
+//             onClick={() => navigate('/payroll/pending')}
+//             style={{ cursor: 'pointer' }}
+//           >
+//             <div className="stat-icon">
+//               <ClockIcon />
 //             </div>
+//             <div className="stat-info">
+//               <h3>{getPendingCount()}</h3>
+//               <p>Pending</p>
+//             </div>
+//           </div>
 
-//             <div className="stat-box purple clickable" onClick={() => setViewDetail('all')}>
-//               <div className="stat-icon">
-//                 <UsersIcon />
-//               </div>
-//               <div className="stat-info">
-//                 <h3>{employees.length}</h3>
-//                 <p>Employees</p>
-//               </div>
+//           <div className="stat-box purple">
+//             <div className="stat-icon">
+//               <UsersIcon />
 //             </div>
-//           </section>
-//         )}
+//             <div className="stat-info">
+//               <h3>{employees.length}</h3>
+//               <p>Employees</p>
+//             </div>
+//           </div>
+//         </section>
 
 //         {/* Payroll Section */}
 //         <section className="payroll-section">
 //           <div className="section-header">
-//             <h2>{getViewTitle()}</h2>
+//             <h2>Monthly Payroll</h2>
 //             <div className="header-actions">
-//               {viewDetail && (
-//                 <button className="btn-back-detail" onClick={() => setViewDetail(null)}>
-//                   <ArrowLeftIcon className="icon-small" />
-//                   Back
-//                 </button>
-//               )}
 //               <input
 //                 type="month"
 //                 value={selectedMonth}
@@ -290,32 +271,16 @@
 //             </div>
 //           </div>
 
-//           {viewDetail && (
-//             <div className="details-info">
-//               <p className="details-count">
-//                 Total: <strong>{getFilteredEmployees().length}</strong> employee{getFilteredEmployees().length !== 1 ? 's' : ''}
-//               </p>
-//             </div>
-//           )}
-
 //           {employees.length === 0 ? (
 //             <div className="empty-state">
 //               <InboxIcon className="empty-icon" />
 //               <h3>No employees found</h3>
 //               <p>Add employees to manage payroll</p>
 //             </div>
-//           ) : getFilteredEmployees().length === 0 ? (
-//             <div className="empty-state">
-//               <InboxIcon className="empty-icon" />
-//               <h3>No {viewDetail} employees</h3>
-//               <p>No employees with this payment status</p>
-//             </div>
 //           ) : (
 //             <div className="payroll-list">
-//               {getFilteredEmployees().map((emp, index) => (
+//               {employees.map((emp) => (
 //                 <div key={emp.id} className="payroll-card">
-//                   {viewDetail && <div className="card-number">{index + 1}</div>}
-                  
 //                   <div className="employee-header">
 //                     <div className="employee-details">
 //                       <div className="avatar">{emp.name.charAt(0).toUpperCase()}</div>
@@ -418,7 +383,7 @@
 // }
 
 // export default Payroll;
-// After Different File of Paid and Pending Roll Details
+// After some of the changes
 // File: client/src/pages/Payroll.js
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
@@ -478,7 +443,8 @@ function Payroll() {
             allowances: parseFloat(existing.allowances) || 0,
             deductions: parseFloat(existing.deductions) || 0,
             workingDays: 22,
-            status: existing.payment_status || 'pending'
+            status: existing.payment_status || 'pending',
+            paidDate: existing.paid_date || null // FIXED: Load paid_date from database
           };
         } else {
           payrollMap[emp.id] = {
@@ -486,7 +452,8 @@ function Payroll() {
             allowances: 0,
             deductions: 0,
             workingDays: 22,
-            status: 'pending'
+            status: 'pending',
+            paidDate: null // FIXED: Initialize paid_date as null
           };
         }
       });
@@ -499,7 +466,8 @@ function Payroll() {
           allowances: 0,
           deductions: 0,
           workingDays: 22,
-          status: 'pending'
+          status: 'pending',
+          paidDate: null // FIXED: Initialize paid_date as null
         };
       });
       setPayrollData(initialPayroll);
@@ -541,7 +509,8 @@ function Payroll() {
           allowances: data.allowances,
           deductions: data.deductions,
           net_salary: calculateNetSalary(emp.id),
-          payment_status: data.status
+          payment_status: data.status,
+          paid_date: data.paidDate // FIXED: Include paid_date in save
         };
       });
       await savePayroll(selectedMonth, records);
@@ -554,22 +523,44 @@ function Payroll() {
   };
 
   const markAsPaid = async (empId) => {
+    const currentDate = new Date().toISOString().split('T')[0]; // FIXED: Get current date in YYYY-MM-DD format
+    
     try {
-      setPayrollData({
+      // Update state with paid status and current date
+      const updatedPayrollData = {
         ...payrollData,
         [empId]: {
           ...payrollData[empId],
-          status: 'paid'
+          status: 'paid',
+          paidDate: currentDate // FIXED: Set paid_date to current date
         }
+      };
+      setPayrollData(updatedPayrollData);
+
+      // Save to database
+      const records = employees.map(emp => {
+        const data = emp.id === empId ? updatedPayrollData[empId] : payrollData[emp.id];
+        return {
+          employee_id: emp.id,
+          basic_salary: data.basicSalary,
+          allowances: data.allowances,
+          deductions: data.deductions,
+          net_salary: calculateNetSalary(emp.id),
+          payment_status: data.status,
+          paid_date: data.paidDate // FIXED: Include paid_date
+        };
       });
-      await saveCurrentPayroll();
+      
+      await savePayroll(selectedMonth, records);
       alert('Marked as paid!');
     } catch (err) {
+      // Revert state if save fails
       setPayrollData({
         ...payrollData,
         [empId]: {
           ...payrollData[empId],
-          status: 'pending'
+          status: 'pending',
+          paidDate: null
         }
       });
       alert('Failed to mark as paid');
@@ -600,7 +591,7 @@ function Payroll() {
         <div className="user-section">
           <button className="btn-back" onClick={() => navigate('/dashboard')}>
             <ArrowLeftIcon className="icon-small" />
-            Back to Dashboard
+            Dashboard
           </button>
           <div className="user-info">
             <UserCircleIcon className="user-icon" />

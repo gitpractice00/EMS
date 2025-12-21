@@ -64,7 +64,7 @@ button {
   font-size: 16px;
   font-weight: 600;
   cursor: pointer;
-  transition: background 0.3s;
+  transition: background-color 0.3s;
 }
 
 button:hover {
@@ -73,7 +73,7 @@ button:hover {
 
 button:disabled {
   background: #ccc;
-  cursor: not-allowed;
+  /* cursor: not-allowed; */
 }
 
 .error-message {

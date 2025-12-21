@@ -36,8 +36,9 @@
   border-radius: 5px;
   cursor: pointer;
   font-size: 14px;
-  transition: background 0.3s;
+  transition: background-color 0.3s;
 }
+
 
 .back-btn:hover {
   background: #3a3d3f;

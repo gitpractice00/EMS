@@ -77,7 +77,10 @@
 .user-icon {
   font-size: 28px;
 }
-
+.minimize{
+  width:26px;
+  height:26;
+}
 .user-details {
   display: flex;
   flex-direction: column;
@@ -97,7 +100,7 @@
 .btn-logout {
   padding: 10px 24px;
   background: #dc3545;
-  color: white;
+  color: rgb(2, 214, 83);
   border: none;
   border-radius: 8px;
   font-size: 14px;
@@ -140,6 +143,7 @@
 .stat-box:hover {
   transform: translateY(-5px);
   box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+  background-color: rgb(245, 230, 237);
 }
 
 .stat-icon {

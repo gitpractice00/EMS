@@ -68,11 +68,14 @@
   transition: all 0.3s;
 }
 
-.btn-back:hover, .btn-logout:hover {
+.btn-back:hover {
   background: #5a6268;
   transform: translateY(-2px);
 }
-
+.btn-logout:hover {
+  background: #d40606;
+  transform: translateY(-2px);
+}
 .btn-save {
   padding: 10px 20px;
   background: #667eea;

@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { addEmployee } from '../services/api';
 import './EmployeeForm.css';
 
-import { ReactComponent as BackIcon } from '../assets/icons/BackArrow.svg';
+import { ReactComponent as ArrowLeftIcon } from '../assets/icons/ArrowLeft.svg';
 import { ReactComponent as CloseIcon } from '../assets/icons/Close.svg';
 import { ReactComponent as PlusIcon } from '../assets/icons/Plus.svg';
 import { ReactComponent as LoaderIcon } from '../assets/icons/Loader.svg';
@@ -104,7 +104,7 @@ function AddEmployee() {
             className="back-btn"
             onClick={() => navigate('/dashboard')}
           >
-            <BackIcon width={14} height={14} style={{ marginRight: 6 }} />
+             <ArrowLeftIcon className="icon-small" />
             Back to Dashboard
           </button>
         </div>

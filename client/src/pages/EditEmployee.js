@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { getEmployee, updateEmployee } from '../services/api';
+import { ReactComponent as ArrowLeftIcon } from '../assets/icons/ArrowLeft.svg';
 import './EmployeeForm.css';
 
 function EditEmployee() {
@@ -21,7 +22,7 @@ function EditEmployee() {
   // Load employee data
   useEffect(() => {
     loadEmployee();
-  }, [id]);
+  }, [id ]);
 
   const loadEmployee = async () => {
     try {
@@ -102,7 +103,9 @@ function EditEmployee() {
             className="back-btn"
             onClick={() => navigate('/dashboard')}
           >
-            ← Back to Dashboard
+            {/* ← Back to Dashboard */}
+             <ArrowLeftIcon className="icon-small" />
+            Dashboard
           </button>
         </div>
 
