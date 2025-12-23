@@ -33,7 +33,7 @@ function Signup() {
     setError('');
 
     // Username should start with a letter
-    const usernameRegex = /^[A-Za-z][A-Za-z0-9_ ]*$/;
+    const usernameRegex = /^[A-Za-z][A-Za-z0-9_  ]*$/;
 
     if (!usernameRegex.test(formData.username)) {
       setError("Username must start with a letter and contain only letters, numbers, or underscores.");

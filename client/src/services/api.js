@@ -71,7 +71,7 @@ export const updateEmployee = async (id, employeeData) => {
 };
 
 /**
- * ✅ UPDATED: Delete employee with password confirmation
+ * UPDATED: Delete employee with password confirmation
  */
 export const deleteEmployee = async (id, password) => {
   const response = await api.delete(`/employees/${id}`, {

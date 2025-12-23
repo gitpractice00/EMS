@@ -5,6 +5,7 @@ import './Dashboard.css';
 
 // SVG Icon Imports
 import { ReactComponent as UsersIcon } from '../assets/icons/Users.svg';
+import { ReactComponent as LogoutIcon } from '../assets/icons/Logout.svg';
 import { ReactComponent as UserIcon } from '../assets/icons/User.svg';
 import { ReactComponent as CheckCircleIcon } from '../assets/icons/CheckCircle.svg';
 import { ReactComponent as BriefcaseIcon } from '../assets/icons/Briefcase.svg';
@@ -90,6 +91,7 @@ function Dashboard() {
             </div>
           </div>
           <button className="btn-logout" onClick={handleLogout}>
+              <LogoutIcon className="icon-small" />
             Logout
           </button>
         </div>

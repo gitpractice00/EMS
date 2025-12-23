@@ -9,7 +9,7 @@ const { testConnection } = require('./database');
 const authRoutes = require('./auth');
 const employeeRoutes = require('./routes/EmployeeRoutes');
 const attendanceRoutes = require('./routes/Attendance_Routes');
-const payrollRoutes = require('./routes/payrollRoutes');
+const payrollRoutes = require('./routes/PayrollRoutes');
 
 const app = express();
 
@@ -72,7 +72,7 @@ const startServer = async () => {
       console.log(` API Docs: http://localhost:${PORT}/`);
     });
   } catch (error) {
-    console.error('❌ Failed to start server:', error);
+    console.error(' Failed to start server:', error);
     process.exit(1);
   }
 };

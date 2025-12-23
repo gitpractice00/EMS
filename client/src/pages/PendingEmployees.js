@@ -5,6 +5,7 @@ import './PayrollList.css';
 
 // SVG Icon Imports
 import { ReactComponent as ClockIcon } from '../assets/icons/Clock.svg';
+import { ReactComponent as LogoutIcon } from '../assets/icons/Logout.svg';
 import { ReactComponent as CheckCircleIcon } from '../assets/icons/CheckCircle.svg';
 import { ReactComponent as UserCircleIcon } from '../assets/icons/UserCircle.svg';
 import { ReactComponent as SaveIcon } from '../assets/icons/Save.svg';
@@ -220,6 +221,7 @@ function PendingEmployees() {
             </div>
           </div>
           <button className="btn-logout" onClick={handleLogout}>
+              <LogoutIcon className="icon-small" />
             Logout
           </button>
         </div>
@@ -275,7 +277,7 @@ function PendingEmployees() {
                 <div key={emp.id} className="payroll-card">
                   <div className="employee-header">
                     <div className="employee-details">
-                      <div className="avatar">{emp.name.charAt(0).toUpperCase()}</div>
+                      <div className="avatar">#{emp.id}</div>
                       <div className="info">
                         <h3>{emp.name}</h3>
                         <p>{emp.position || 'No Position'}</p>
