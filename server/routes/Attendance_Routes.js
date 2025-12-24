@@ -1,3 +1,194 @@
+// import React, { useState, useEffect } from 'react';
+// import { useNavigate } from 'react-router-dom';
+// import { getAllEmployees, logout, getCurrentUser, markAttendance, getAttendance } from '../services/api';
+// import './Attendance.css';
+
+// // Component Imports
+// import AttendanceHeader from '../components/attendance/AttendanceHeader';
+// import AttendanceStats from '../components/attendance/AttendanceStats';
+// import AttendanceForm from '../components/attendance/AttendanceForm';
+// import PresentList from '../components/attendance/PresentList';
+// import AbsentList from '../components/attendance/AbsentList';
+// import LeaveList from '../components/attendance/LeaveList';
+// import TotalEmployeesList from '../components/attendance/TotalEmployeesList';
+
+// function Attendance() {
+//   const [employees, setEmployees] = useState([]);
+//   const [attendance, setAttendance] = useState({});
+//   const [selectedDate, setSelectedDate] = useState(new Date().toISOString().split('T')[0]);
+//   const today = new Date().toISOString().split('T')[0];
+//   const [loading, setLoading] = useState(true);
+//   const [viewDetail, setViewDetail] = useState(null); // null, 'present', 'absent', 'leave', 'total'
+//   const navigate = useNavigate();
+//   const user = getCurrentUser();
+
+//   useEffect(() => {
+//     loadEmployees();
+//   }, []);
+
+//   useEffect(() => {
+//     if (employees.length > 0) {
+//       loadAttendanceForDate();
+//     }
+//     // eslint-disable-next-line react-hooks/exhaustive-deps
+//   }, [selectedDate, employees]);
+
+//   const loadEmployees = async () => {
+//     try {
+//       const response = await getAllEmployees();
+//       setEmployees(response.data);
+//       setLoading(false);
+//     } catch (err) {
+//       console.error('Failed to load employees:', err);
+//       setLoading(false);
+//     }
+//   };
+
+//   const loadAttendanceForDate = async () => {
+//     try {
+//       const response = await getAttendance(selectedDate);
+//       const attendanceMap = {};
+//       employees.forEach(emp => {
+//         attendanceMap[emp.id] = 'present'; // Default
+//       });
+//       response.data.forEach(record => {
+//         attendanceMap[record.employee_id] = record.status;
+//       });
+//       setAttendance(attendanceMap);
+//     } catch (err) {
+//       const initialAttendance = {};
+//       employees.forEach(emp => {
+//         initialAttendance[emp.id] = 'present';
+//       });
+//       setAttendance(initialAttendance);
+//     }
+//   };
+
+//   const handleLogout = () => {
+//     logout();
+//     navigate('/');
+//   };
+
+//   const handleAttendanceChange = (employeeId, status) => {
+//     setAttendance({ ...attendance, [employeeId]: status });
+//   };
+
+//   const handleSubmit = async () => {
+//     if (selectedDate > today) {
+//       alert('Cannot mark attendance for future dates!');
+//       return;
+//     }
+//     try {
+//       const records = Object.keys(attendance).map(empId => ({
+//         employee_id: parseInt(empId),
+//         date: selectedDate,
+//         status: attendance[empId]
+//       }));
+//       await markAttendance(selectedDate, records);
+//       alert(`Attendance marked for ${selectedDate}!`);
+//     } catch (err) {
+//       alert('Failed to mark attendance');
+//       console.error('Error:', err);
+//     }
+//   };
+
+//   const getStatusCount = () => {
+//     const present = Object.values(attendance).filter(s => s === 'present').length;
+//     const absent = Object.values(attendance).filter(s => s === 'absent').length;
+//     const leave = Object.values(attendance).filter(s => s === 'leave').length;
+//     return { present, absent, leave };
+//   };
+
+//   const statusCount = getStatusCount();
+
+//   const getFilteredEmployees = (status) => {
+//     if (status === 'total') {
+//       return employees.map(emp => ({ ...emp, status: attendance[emp.id] }));
+//     }
+//     return employees
+//       .filter(emp => attendance[emp.id] === status)
+//       .map(emp => ({ ...emp, status: attendance[emp.id] }));
+//   };
+
+//   if (loading) {
+//     return (
+//       <div className="loading-screen">
+//         <div className="spinner"></div>
+//         <p>Loading...</p>
+//       </div>
+//     );
+//   }
+
+//   return (
+//     <div className="attendance-page">
+//       {/* Top Header */}
+//       <AttendanceHeader 
+//         user={user}
+//         onLogout={handleLogout}
+//         onNavigateBack={() => navigate('/dashboard')}
+//       />
+
+//       {/* Main Content */}
+//       <main className="main-content">
+//         {!viewDetail ? (
+//           <>
+//             {/* Stats Section */}
+//             <AttendanceStats 
+//               statusCount={statusCount}
+//               totalEmployees={employees.length}
+//               onViewDetail={setViewDetail}
+//             />
+
+//             {/* Attendance Form Section */}
+//             <AttendanceForm
+//               employees={employees}
+//               attendance={attendance}
+//               selectedDate={selectedDate}
+//               today={today}
+//               onDateChange={setSelectedDate}
+//               onAttendanceChange={handleAttendanceChange}
+//               onSubmit={handleSubmit}
+//             />
+//           </>
+//         ) : (
+//           <>
+//             {/* Conditional List Views */}
+//             {viewDetail === 'present' && (
+//               <PresentList 
+//                 employees={getFilteredEmployees('present')}
+//                 onBack={() => setViewDetail(null)}
+//               />
+//             )}
+            
+//             {viewDetail === 'absent' && (
+//               <AbsentList 
+//                 employees={getFilteredEmployees('absent')}
+//                 onBack={() => setViewDetail(null)}
+//               />
+//             )}
+            
+//             {viewDetail === 'leave' && (
+//               <LeaveList 
+//                 employees={getFilteredEmployees('leave')}
+//                 onBack={() => setViewDetail(null)}
+//               />
+//             )}
+            
+//             {viewDetail === 'total' && (
+//               <TotalEmployeesList 
+//                 employees={getFilteredEmployees('total')}
+//                 onBack={() => setViewDetail(null)}
+//               />
+//             )}
+//           </>
+//         )}
+//       </main>
+//     </div>
+//   );
+// }
+
+// export default Attendance;
+
 const express = require('express');
 const router = express.Router();
 const db = require('../database');
@@ -104,6 +295,8 @@ router.post('/', verifyToken, function(req, res) {
   // Delete existing attendance for this date
   const deleteSql = 'DELETE FROM attendance WHERE attendance_date = ?';
   
+  console.log('[INFO] Deleting old attendance records for date:', date);
+  
   db.query(deleteSql, [date], function(deleteErr, deleteResult) {
     if (deleteErr) {
       console.error('[ERROR] Delete error:', deleteErr);
@@ -115,11 +308,18 @@ router.post('/', verifyToken, function(req, res) {
     
     console.log('[INFO] Deleted', deleteResult.affectedRows, 'old records');
     
-    // Insert new attendance records
+    // IMPROVED: Insert new attendance records - accepts date from both parameter and individual records
     const insertSql = 'INSERT INTO attendance (employee_id, attendance_date, status) VALUES ?';
-    const values = records.map(r => [r.employee_id, date, r.status]);
     
-    console.log('[INFO] Inserting values:', JSON.stringify(values, null, 2));
+    const values = records.map(r => {
+      // Use date from individual record if available, otherwise use the main date parameter
+      const recordDate = r.date || date;
+      console.log(`[DEBUG] Employee ${r.employee_id}: date=${recordDate}, status=${r.status}`);
+      return [r.employee_id, recordDate, r.status];
+    });
+    
+    console.log('[INFO] Inserting', values.length, 'attendance records');
+    console.log('[DEBUG] Sample values:', JSON.stringify(values[0], null, 2));
     
     db.query(insertSql, [values], function(insertErr, insertResult) {
       if (insertErr) {

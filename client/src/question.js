@@ -8,6 +8,11 @@
 // create a route for backend aznd database for the attendance and payroll
 //Don't use the icons use instead svg image in all the parts and also avoid the use of the icons.  
 
+
+// date 2082/09/08
+
+// the above code is my addEmployee.js in it validate the email as email must be unique than other registered employee and the date should also be validate as we cannot enter the future date and wrong if so throw an error and error should be display in UI for 5 sec only. And the user can input phone number up-to 10 digits only.  and second is the payroll.js so in it the working days cannot be inserted more than 32 if so throw an error for 5 sec . Very crucial point is that don't change any of the UI.
+
 // Add New Employee Validation with the suggestions below
 /*
 import React, { useState, useEffect } from 'react';
