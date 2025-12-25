@@ -39,7 +39,6 @@ function Login() {
       const message = err.response?.data?.error || 'wrong username or password';
       setError(message);
 
-      // Clear the error automatically after 3 seconds
       setTimeout(() => setError(''), 3000);
     } finally {
       setLoading(false);
@@ -65,7 +64,7 @@ function Login() {
             />
           </div>
 
-          <div className="form-group" style={{ position: 'relative' }}>
+          <div className="form-group">
             <label htmlFor="password">Password:</label>
             <input
               id="password"
