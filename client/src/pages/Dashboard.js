@@ -238,8 +238,8 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { getAllEmployees, logout, getCurrentUser, deleteEmployee } from '../services/api';
-import ProfileSettingsModal from '../components/ProfileSettingsModal';
-import DeleteConfirmModal from '../components/DeleteConfirmModal';
+import ProfileSettingsModal from '../profileComponent/ProfileSettingsModal';
+import DeleteConfirmModal from '../profileComponent/DeleteConfirmModal';
 import './Dashboard.css';
 
 // SVG Icon Imports
