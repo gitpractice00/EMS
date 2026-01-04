@@ -83,8 +83,14 @@ function PendingEmployees() {
   };
 
   const handleLogout = () => {
-    logout();
-    navigate('/');
+ const confirmLogout = window.confirm("Are you sure you want to logout?");
+    if (confirmLogout) {
+      // Redirect to logout route
+      logout();
+      navigate('/');
+    } else {
+      console.log("Logout canceled");
+    }
   };
 
   const calculateNetSalary = (empId) => {

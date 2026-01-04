@@ -185,7 +185,7 @@
 //                       <p className="position">{emp.position || 'No Position'}</p>
 //                     </div>
 //                   </div>
-                  
+
 //                   <div className="card-body">
 //                     <div className="info-row">
 //                       <UserIcon className=" minimize" />
@@ -262,8 +262,8 @@ function Dashboard() {
   const [error, setError] = useState('');
   const [searchTerm, setSearchTerm] = useState('');
   const [isProfileModalOpen, setIsProfileModalOpen] = useState(false); // FIXED: Profile modal state
-  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false); // FIXED: Delete modal state
-  const [employeeToDelete, setEmployeeToDelete] = useState(null); // FIXED: Track employee to delete
+  // const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false); // FIXED: Delete modal state
+  // const [employeeToDelete, setEmployeeToDelete] = useState(null); // FIXED: Track employee to delete
   const [user, setUser] = useState(getCurrentUser()); // FIXED: Use state for user
   const navigate = useNavigate();
 
@@ -284,8 +284,17 @@ function Dashboard() {
   };
 
   const handleLogout = () => {
-    logout();
-    navigate('/');
+    const confirmLogout = window.confirm("Are you sure you want to logout?");
+    if (confirmLogout) {
+      // Redirect to logout route
+      logout();
+      navigate('/');
+    } else {
+      console.log("Logout canceled");
+    }
+
+
+
   };
 
   // FIXED: Open profile modal when clicking user section
@@ -362,7 +371,7 @@ function Dashboard() {
       <main className="main-content">
         {/* Stats Section */}
         <section className="stats-section">
-          <div className="stat-box"> 
+          <div className="stat-box">
             <div className="stat-icon blue">
               <UsersIcon />
             </div>
@@ -372,7 +381,7 @@ function Dashboard() {
             </div>
           </div>
 
-          <div className="stat-box" onClick={() => navigate('/attendance')} style={{cursor: 'pointer'}}>
+          <div className="stat-box" onClick={() => navigate('/attendance')} style={{ cursor: 'pointer' }}>
             <div className="stat-icon green">
               <CheckCircleIcon />
             </div>
@@ -382,7 +391,7 @@ function Dashboard() {
             </div>
           </div>
 
-          <div className="stat-box" onClick={() => navigate('/payroll')} style={{cursor: 'pointer'}}>
+          <div className="stat-box" onClick={() => navigate('/payroll')} style={{ cursor: 'pointer' }}>
             <div className="stat-icon purple">
               <BriefcaseIcon />
             </div>
@@ -445,7 +454,7 @@ function Dashboard() {
                       <p className="position">{emp.position || 'No Position'}</p>
                     </div>
                   </div>
-                  
+
                   <div className="card-body">
                     <div className="info-row">
                       <UserIcon className=" minimize" />
@@ -470,13 +479,13 @@ function Dashboard() {
                   </div>
 
                   <div className="card-footer">
-                    <button 
+                    <button
                       className="btn-edit"
                       onClick={() => navigate(`/employees/edit/${emp.id}`)}
                     >
                       Edit
                     </button>
-                    <button 
+                    <button
                       className="btn-delete"
                       onClick={() => handleDelete(emp.id, emp.name)}
                     >
