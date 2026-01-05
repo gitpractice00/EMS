@@ -50,6 +50,14 @@
 //   return user ? JSON.parse(user) : null;
 // };
 
+// // FIXED: NEW - Update user profile (email/password)
+// export const updateUserProfile = async (updateData) => {
+//   const response = await api.put('/auth/users/profile', updateData);
+//   return response.data;
+// };
+
+
+
 // export const getAllEmployees = async () => {
 //   const response = await api.get('/employees');
 //   return response.data;
@@ -122,8 +130,6 @@
 //   const response = await api.get(`/api/payroll/summary/${year}`);
 //   return response.data;
 // };
-
-
 import axios from 'axios';
 
 const API_URL = 'http://localhost:5000';
@@ -176,13 +182,10 @@ export const getCurrentUser = () => {
   return user ? JSON.parse(user) : null;
 };
 
-// FIXED: NEW - Update user profile (email/password)
 export const updateUserProfile = async (updateData) => {
   const response = await api.put('/auth/users/profile', updateData);
   return response.data;
 };
-
-
 
 export const getAllEmployees = async () => {
   const response = await api.get('/employees');
@@ -205,12 +208,10 @@ export const updateEmployee = async (id, employeeData) => {
 };
 
 /**
- * UPDATED: Delete employee with password confirmation
+ * FIXED: Delete employee without password requirement
  */
-export const deleteEmployee = async (id, password) => {
-  const response = await api.delete(`/employees/${id}`, {
-    data: { password }
-  });
+export const deleteEmployee = async (id) => {
+  const response = await api.delete(`/employees/${id}`);
   return response.data;
 };
 
