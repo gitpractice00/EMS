@@ -519,3 +519,42 @@
     gap: 12px;
   }
 }
+/* Below are added after the payroll history section */
+
+
+.btn-hist{
+  display:flex;
+border-radius:8px;
+  font-weight: 600;
+  padding: 10px 20px;
+align-items:center;
+font-size:14px;
+gap:8px;
+}
+
+ 
+
+.btn-history .icon-small {
+  width: 18px;
+  height: 18px;
+}
+
+.btn-back-small {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 20px;
+  background: #6b7280;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.btn-back-small:hover {
+  background: #4b5563;
+  transform: translateY(-2px);
+}

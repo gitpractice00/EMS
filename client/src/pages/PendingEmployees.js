@@ -217,7 +217,7 @@ function PendingEmployees() {
         <div className="user-section">
           <button className="btn-back" onClick={() => navigate('/payroll')}>
             <ArrowLeftIcon className="icon-small" />
-            Back to Payroll
+            Payroll
           </button>
           <div className="user-info">
             <UserCircleIcon className="user-icon" />

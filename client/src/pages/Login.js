@@ -36,7 +36,7 @@ function Login() {
       await login({ email, password });
       navigate('/dashboard');
     } catch (err) {
-      const message = err.response?.data?.error || 'wrong username or password';
+      const message = err.response?.data?.error || 'Invalid username or password';
       setError(message);
 
       setTimeout(() => setError(''), 3000);
