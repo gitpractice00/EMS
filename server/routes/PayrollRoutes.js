@@ -2,9 +2,6 @@ const express = require('express');
 const router = express.Router();
 const db = require('../database');
 const verifyToken = require('../authMiddleware');
-// import { authenticateToken } from "../middleware/auth";
-
- const authenticateToken= require('../authMiddleware')
 
 // Test route
 router.get('/test', function(req, res) {
@@ -55,7 +52,7 @@ router.post('/', verifyToken, function(req, res) {
   
   console.log('[POST] Processing payroll for month:', month);
   console.log('[INFO] Records count:', records?.length);
-  
+  console.log('Received payroll records:', JSON.stringify(records, null, 2));
   // Validation
   if (!month) {
     return res.status(400).json({
@@ -144,151 +141,39 @@ router.post('/', verifyToken, function(req, res) {
   });
 });
 
+
+
 // Mark a payroll record as paid
-// router.put('/:id/pay', verifyToken, function(req, res) {
-//   const payrollId = req.params.id;
+router.put('/:id/pay', verifyToken, function(req, res) {
+  const payrollId = req.params.id;
   
-//   console.log('[PUT] Marking payroll as paid:', payrollId);
+  console.log('[PUT] Marking payroll as paid:', payrollId);
   
-//   const sql = 'UPDATE payroll SET payment_status = ?, paid_date = NOW() WHERE id = ?';
+  const sql = 'UPDATE payroll SET payment_status = ?, paid_date = NOW() WHERE id = ?';
   
-//   db.query(sql, ['paid', payrollId], function(err, result) {
-//     if (err) {
-//       console.error('[ERROR] Database error:', err);
-//       return res.status(500).json({
-//         error: 'Failed to update payment status',
-//         details: err.message
-//       });
-//     }
-    
-//     if (result.affectedRows === 0) {
-//       return res.status(404).json({
-//         error: 'Payroll record not found'
-//       });
-//     }
-    
-//     console.log('[SUCCESS] Payment status updated');
-//     res.json({
-//       success: true,
-//       message: 'Payment marked as paid'
-//     });
-//   });
-// });
-
-router.post('/api/payroll', authenticateToken, async (req, res) => {
-  const { month, records } = req.body;
-
-  if (!month || !records || !Array.isArray(records)) {
-    return res.status(400).json({ error: 'Month and records array are required' });
-  }
-
-  try {
-    // Use transaction for data consistency
-    await db.query('BEGIN');
-
-    for (const record of records) {
-      const {
-        employee_id,
-        basic_salary,
-        allowances,
-        deductions,
-        net_salary,
-        payment_status,
-        paid_date  // FIXED: Accept paid_date from frontend
-      } = record;
-
-      // FIXED: Set paid_date to current date if payment_status is 'paid' and no date provided
-      const finalPaidDate = payment_status === 'paid' 
-        ? (paid_date || new Date().toISOString().split('T')[0]) 
-        : null;
-
-      // Check if record exists
-      const checkQuery = `
-        SELECT id FROM payroll 
-        WHERE employee_id = $1 AND month = $2
-      `;
-      const existing = await db.query(checkQuery, [employee_id, month]);
-
-      if (existing.rows.length > 0) {
-        // Update existing record - FIXED: Include paid_date
-        const updateQuery = `
-          UPDATE payroll 
-          SET basic_salary = $1, 
-              allowances = $2, 
-              deductions = $3, 
-              net_salary = $4, 
-              payment_status = $5,
-              paid_date = $6,
-              updated_at = CURRENT_TIMESTAMP
-          WHERE employee_id = $7 AND month = $8
-        `;
-        await db.query(updateQuery, [
-          basic_salary,
-          allowances,
-          deductions,
-          net_salary,
-          payment_status,
-          finalPaidDate,  // FIXED: Store paid_date
-          employee_id,
-          month
-        ]);
-      } else {
-        // Insert new record - FIXED: Include paid_date
-        const insertQuery = `
-          INSERT INTO payroll 
-          (employee_id, month, basic_salary, allowances, deductions, net_salary, payment_status, paid_date)
-          VALUES ($1, $2, $3, $4, $5, $6, $7, $8)
-        `;
-        await db.query(insertQuery, [
-          employee_id,
-          month,
-          basic_salary,
-          allowances,
-          deductions,
-          net_salary,
-          payment_status,
-          finalPaidDate  // FIXED: Store paid_date
-        ]);
-      }
+  db.query(sql, ['paid', payrollId], function(err, result) {
+    if (err) {
+      console.error('[ERROR] Database error:', err);
+      return res.status(500).json({
+        error: 'Failed to update payment status',
+        details: err.message
+      });
     }
-
-    await db.query('COMMIT');
-    res.json({ message: 'Payroll saved successfully' });
-  } catch (error) {
-    await db.query('ROLLBACK');
-    console.error('Save payroll error:', error);
-    res.status(500).json({ error: 'Failed to save payroll' });
-  }
-});
-
-// FIXED: Mark payment as paid (alternative method)
-router.put('/api/payroll/:id/pay', authenticateToken, async (req, res) => {
-  const { id } = req.params;
-
-  try {
-    const query = `
-      UPDATE payroll 
-      SET payment_status = 'paid',
-          paid_date = CURRENT_DATE,
-          updated_at = CURRENT_TIMESTAMP
-      WHERE id = $1
-      RETURNING *
-    `;
-    const result = await db.query(query, [id]);
-
-    if (result.rows.length === 0) {
-      return res.status(404).json({ error: 'Payroll record not found' });
+    
+    if (result.affectedRows === 0) {
+      return res.status(404).json({
+        error: 'Payroll record not found'
+      });
     }
-
-    res.json({ 
-      message: 'Payment marked as paid', 
-      data: result.rows[0] 
+    
+    console.log('[SUCCESS] Payment status updated');
+    res.json({
+      success: true,
+      message: 'Payment marked as paid'
     });
-  } catch (error) {
-    console.error('Mark payment error:', error);
-    res.status(500).json({ error: 'Failed to mark payment as paid' });
-  }
+  });
 });
+
 
 // Get payroll summary for a year
 router.get('/summary/:year', verifyToken, function(req, res) {

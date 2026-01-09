@@ -84,7 +84,7 @@ router.get('/:id', verifyToken, function(req, res) {
   });
 });
 
-// CREATE - Add new employee (PROTECTED)
+// CREATE - Add new employee (PROTECTED) with duplicate validation
 router.post('/', verifyToken, function(req, res) {
   console.log('[POST] Adding new employee:', req.body);
   
@@ -97,66 +97,199 @@ router.post('/', verifyToken, function(req, res) {
     });
   }
   
-  const sql = 'INSERT INTO employees (name, email, phone, position, salary, hire_date) VALUES (?, ?, ?, ?, ?, ?)';
-  const values = [name, email, phone, position, salary, hire_date];
+  // FIXED: Check for duplicate email
+  const checkEmailSql = 'SELECT id FROM employees WHERE email = ?';
   
-  db.query(sql, values, function(err, result) {
-    if (err) {
-      console.error('[ERROR] Insert error:', err);
-      return res.status(500).json({ 
-        error: 'Failed to add employee',
-        details: err.message 
+  db.query(checkEmailSql, [email], function(emailErr, emailResults) {
+    if (emailErr) {
+      console.error('[ERROR] Email check error:', emailErr);
+      return res.status(500).json({
+        error: 'Failed to validate email',
+        details: emailErr.message
       });
     }
     
-    console.log('[SUCCESS] Employee added, ID:', result.insertId);
-    res.status(201).json({
-      success: true,
-      message: 'Employee added successfully!',
-      employeeId: result.insertId
-    });
+    if (emailResults.length > 0) {
+      console.log('[ERROR] Duplicate email:', email);
+      return res.status(409).json({
+        error: 'This email address is already registered with another employee'
+      });
+    }
+    
+    // FIXED: Check for duplicate phone (only if phone is provided)
+    if (phone && phone.trim() !== '') {
+      const checkPhoneSql = 'SELECT id FROM employees WHERE phone = ?';
+      
+      db.query(checkPhoneSql, [phone], function(phoneErr, phoneResults) {
+        if (phoneErr) {
+          console.error('[ERROR] Phone check error:', phoneErr);
+          return res.status(500).json({
+            error: 'Failed to validate phone number',
+            details: phoneErr.message
+          });
+        }
+        
+        if (phoneResults.length > 0) {
+          console.log('[ERROR] Duplicate phone:', phone);
+          return res.status(409).json({
+            error: 'This phone number is already registered with another employee'
+          });
+        }
+        
+        // Proceed with insert if no duplicates
+        insertEmployee();
+      });
+    } else {
+      // No phone provided, proceed with insert
+      insertEmployee();
+    }
   });
+  
+  // Helper function to insert employee
+  function insertEmployee() {
+    const sql = 'INSERT INTO employees (name, email, phone, position, salary, hire_date) VALUES (?, ?, ?, ?, ?, ?)';
+    const values = [name, email, phone, position, salary, hire_date];
+    
+    db.query(sql, values, function(err, result) {
+      if (err) {
+        console.error('[ERROR] Insert error:', err);
+        
+        // FIXED: Handle MySQL duplicate key errors
+        if (err.code === 'ER_DUP_ENTRY') {
+          if (err.message.includes('email')) {
+            return res.status(409).json({
+              error: 'This email address is already registered with another employee'
+            });
+          } else if (err.message.includes('phone')) {
+            return res.status(409).json({
+              error: 'This phone number is already registered with another employee'
+            });
+          }
+        }
+        
+        return res.status(500).json({ 
+          error: 'Failed to add employee',
+          details: err.message 
+        });
+      }
+      
+      console.log('[SUCCESS] Employee added, ID:', result.insertId);
+      res.status(201).json({
+        success: true,
+        message: 'Employee added successfully!',
+        employeeId: result.insertId
+      });
+    });
+  }
 });
 
-// UPDATE - Edit existing employee (PROTECTED)
+// UPDATE - Edit existing employee (PROTECTED) with duplicate validation
 router.put('/:id', verifyToken, function(req, res) {
   const id = req.params.id;
   console.log('[PUT] Updating employee ID:', id);
   
   const { name, email, phone, position, salary, hire_date } = req.body;
   
-  const sql = 'UPDATE employees SET name = ?, email = ?, phone = ?, position = ?, salary = ?, hire_date = ? WHERE id = ?';
-  const values = [name, email, phone, position, salary, hire_date, id];
+  // FIXED: Check for duplicate email (excluding current employee)
+  const checkEmailSql = 'SELECT id FROM employees WHERE email = ? AND id != ?';
   
-  db.query(sql, values, function(err, result) {
-    if (err) {
-      console.error('[ERROR] Update error:', err);
-      return res.status(500).json({ 
-        error: 'Failed to update employee',
-        details: err.message 
+  db.query(checkEmailSql, [email, id], function(emailErr, emailResults) {
+    if (emailErr) {
+      console.error('[ERROR] Email check error:', emailErr);
+      return res.status(500).json({
+        error: 'Failed to validate email',
+        details: emailErr.message
       });
     }
     
-    if (result.affectedRows === 0) {
-      console.log('[ERROR] Employee not found');
-      return res.status(404).json({ 
-        error: 'Employee not found' 
+    if (emailResults.length > 0) {
+      console.log('[ERROR] Duplicate email:', email);
+      return res.status(409).json({
+        error: 'This email address is already registered with another employee'
       });
     }
     
-    console.log('[SUCCESS] Employee updated');
-    res.json({
-      success: true,
-      message: 'Employee updated successfully!'
-    });
+    // FIXED: Check for duplicate phone (only if phone is provided and not empty)
+    if (phone && phone.trim() !== '') {
+      const checkPhoneSql = 'SELECT id FROM employees WHERE phone = ? AND id != ?';
+      
+      db.query(checkPhoneSql, [phone, id], function(phoneErr, phoneResults) {
+        if (phoneErr) {
+          console.error('[ERROR] Phone check error:', phoneErr);
+          return res.status(500).json({
+            error: 'Failed to validate phone number',
+            details: phoneErr.message
+          });
+        }
+        
+        if (phoneResults.length > 0) {
+          console.log('[ERROR] Duplicate phone:', phone);
+          return res.status(409).json({
+            error: 'This phone number is already registered with another employee'
+          });
+        }
+        
+        // Proceed with update if no duplicates
+        updateEmployee();
+      });
+    } else {
+      // No phone provided, proceed with update
+      updateEmployee();
+    }
   });
+  
+  // Helper function to update employee
+  function updateEmployee() {
+    const sql = 'UPDATE employees SET name = ?, email = ?, phone = ?, position = ?, salary = ?, hire_date = ? WHERE id = ?';
+    const values = [name, email, phone, position, salary, hire_date, id];
+    
+    db.query(sql, values, function(err, result) {
+      if (err) {
+        console.error('[ERROR] Update error:', err);
+        
+        // FIXED: Handle MySQL duplicate key errors
+        if (err.code === 'ER_DUP_ENTRY') {
+          if (err.message.includes('email')) {
+            return res.status(409).json({
+              error: 'This email address is already registered with another employee'
+            });
+          } else if (err.message.includes('phone')) {
+            return res.status(409).json({
+              error: 'This phone number is already registered with another employee'
+            });
+          }
+        }
+        
+        return res.status(500).json({ 
+          error: 'Failed to update employee',
+          details: err.message 
+        });
+      }
+      
+      if (result.affectedRows === 0) {
+        console.log('[ERROR] Employee not found');
+        return res.status(404).json({ 
+          error: 'Employee not found' 
+        });
+      }
+      
+      console.log('[SUCCESS] Employee updated');
+      res.json({
+        success: true,
+        message: 'Employee updated successfully!'
+      });
+    });
+  }
 });
+
 // DELETE - Archive employee and move to separate table WITHOUT password verification (PROTECTED)
 router.delete('/:id', verifyToken, function(req, res) {
   const id = req.params.id;
+  const { deleted_by } = req.body; // FIXED: Get deleted_by from request body
   
   console.log('[DELETE] Archiving employee ID:', id);
   console.log('[INFO] Requested by user:', req.user.email);
+  console.log('[INFO] Deleted by:', deleted_by || req.user.email);
   
   // Get employee data first
   const getEmployeeSql = 'SELECT * FROM employees WHERE id = ?';
@@ -179,6 +312,9 @@ router.delete('/:id', verifyToken, function(req, res) {
     
     const employee = empResults[0];
     
+    // FIXED: Use deleted_by from request or fallback to authenticated user
+    const deletedByEmail = deleted_by || req.user.email;
+    
     // Insert into employees_archive table
     const archiveSql = `
       INSERT INTO employees_archive 
@@ -194,7 +330,7 @@ router.delete('/:id', verifyToken, function(req, res) {
       employee.position,
       employee.salary,
       employee.hire_date,
-      req.user.email
+      deletedByEmail // FIXED: Store the email of who deleted the employee
     ];
     
     db.query(archiveSql, archiveValues, function(archiveErr, archiveResult) {
@@ -207,6 +343,7 @@ router.delete('/:id', verifyToken, function(req, res) {
       }
       
       console.log('[SUCCESS] Employee archived with archive ID:', archiveResult.insertId);
+      console.log('[SUCCESS] Deleted by:', deletedByEmail);
       
       // Disable foreign key checks temporarily
       const disableFKSql = 'SET FOREIGN_KEY_CHECKS = 0';
@@ -249,11 +386,13 @@ router.delete('/:id', verifyToken, function(req, res) {
           res.json({
             success: true,
             message: 'Employee deleted and archived successfully!',
-            archiveId: archiveResult.insertId
+            archiveId: archiveResult.insertId,
+            deletedBy: deletedByEmail
           });
         });
       });
     });
   });
 });
+
 module.exports = router;
